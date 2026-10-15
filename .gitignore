@@ -1,0 +1,14 @@
+node_modules/
+dist/
+public/social-card.png
+.astro/
+playwright-report/
+test-results/
+coverage/
+.tmp/
+.env
+.env.*
+!.env.example
+*.log
+Thumbs.db
+.DS_Store

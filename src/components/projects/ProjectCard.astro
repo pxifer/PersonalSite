@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '@/lib/paths';
+
+type Props = { project: CollectionEntry<'projects'>; featured?: boolean };
+const { project, featured = false } = Astro.props as Props;
+const { data } = project;
+const coverMark = data.cover.split('/')[0].trim();
+const coverNumber = data.cover.split('/')[1]?.trim() ?? '';
+---
+
+<article class:list={['project-card', { 'project-card-featured': featured }]}>
+  <a
+    class="project-cover"
+    href={withBase(`/projects/${data.slug}`)}
+    aria-label={`查看项目：${data.title}`}
+  >
+    <span class="cover-grid" aria-hidden="true"></span>
+    <span class="cover-code" aria-hidden="true"
+      ><span>{coverNumber}</span><strong>{coverMark}</strong></span
+    >
+    <span class="cover-label">项目视觉封面</span>
+    <span class="cover-title">{data.title}</span>
+    <span class="cover-orbit" aria-hidden="true"></span>
+  </a>
+  <div class="project-card-body">
+    <div class="project-heading-row">
+      <div>
+        <p class="eyebrow">{data.period} · {data.role}</p>
+        <h3><a href={withBase(`/projects/${data.slug}`)}>{data.title}</a></h3>
+      </div>
+      {data.isExample && <span class="example-tag">示例内容</span>}
+    </div>
+    <p class="muted-copy">{data.summary}</p>
+    <p class="project-outcome">{data.outcome}</p>
+    <ul class="tag-list" aria-label="技术栈">
+      {data.stack.slice(0, featured ? 5 : 3).map((item) => <li>{item}</li>)}
+    </ul>
+    <a class="text-link" href={withBase(`/projects/${data.slug}`)}
+      >查看项目详情 <span aria-hidden="true">↗</span></a
+    >
+  </div>
+</article>

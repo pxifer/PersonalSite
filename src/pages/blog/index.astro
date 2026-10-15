@@ -1,0 +1,90 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import PostCard from '@/components/blog/PostCard.astro';
+import { getPostFilters, getPublishedPosts } from '@/lib/content';
+import { profile } from '@/data/profile';
+
+const posts = getPublishedPosts(await getCollection('blog'));
+const { categories, tags } = getPostFilters(posts);
+---
+
+<BaseLayout
+  title={`技术博客 · ${profile.name}`}
+  description="记录工程实践、设计选择与持续学习。"
+>
+  <div class="example-ribbon" role="note">演示文章尚未替换为真实内容</div>
+  <section class="page-intro container">
+    <p class="eyebrow">FIELD NOTES</p>
+    <h1>技术博客</h1>
+    <p>记录项目实践、工程方法与持续学习。</p>
+  </section>
+  <section class="container page-content blog-page" aria-label="文章列表">
+    {
+      posts.length ? (
+        <>
+          <div class="blog-controls" data-blog-controls hidden>
+            <label class="search-field">
+              <span class="sr-only">搜索标题、摘要、分类或标签</span>
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <>
+                  <circle cx="11" cy="11" r="7" />
+                  <path d="m16 16 4 4" />
+                </>
+              </svg>
+              <input type="search" placeholder="搜索文章…" data-search-input />
+              <kbd>⌘ K</kbd>
+            </label>
+            <div class="filter-row">
+              <label>
+                分类
+                <select data-category-filter>
+                  <option value="">全部分类</option>
+                  {categories.map((category) => (
+                    <option value={category}>{category}</option>
+                  ))}
+                </select>
+              </label>
+              <label>
+                标签
+                <select data-tag-filter>
+                  <option value="">全部标签</option>
+                  {tags.map((tag) => (
+                    <option value={tag}>{tag}</option>
+                  ))}
+                </select>
+              </label>
+              <button type="button" class="clear-filters" data-clear-filters>
+                清除筛选
+              </button>
+            </div>
+            <p class="result-count" aria-live="polite" data-result-count />
+          </div>
+          <noscript>
+            <p class="noscript-note">
+              搜索和筛选需要启用 JavaScript；全部文章仍可直接阅读。
+            </p>
+          </noscript>
+          <div class="posts-grid blog-list" data-post-list>
+            {posts.map((post) => (
+              <PostCard post={post} />
+            ))}
+          </div>
+          <p class="empty-state" data-no-results hidden>
+            没有找到相关文章，试试其他关键词或清除筛选。
+          </p>
+        </>
+      ) : (
+        <div class="empty-state">
+          <>
+            <h2>文章准备中</h2>
+            <p>文章发布后会出现在这里。</p>
+          </>
+        </div>
+      )
+    }
+  </section>
+  <script>
+    import '@/scripts/blog.ts';
+  </script>
+</BaseLayout>

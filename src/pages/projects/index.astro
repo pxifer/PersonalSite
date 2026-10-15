@@ -1,0 +1,40 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import ProjectCard from '@/components/projects/ProjectCard.astro';
+import { profile } from '@/data/profile';
+
+const projects = (await getCollection('projects')).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+---
+
+<BaseLayout
+  title={`项目作品 · ${profile.name}`}
+  description="精选项目、个人职责与实现思路。"
+>
+  <div class="example-ribbon" role="note">演示内容 · 项目资料发布前需替换并核实</div>
+  <section class="page-intro container">
+    <p class="eyebrow">SELECTED WORK</p>
+    <h1>项目作品</h1>
+    <p>从真实问题出发，展示我如何拆解需求、做出选择并完成交付。</p>
+  </section>
+  <section class="container page-content project-list-page" aria-label="项目列表">
+    {
+      projects.length ? (
+        <div class="project-grid project-grid-list">
+          {projects.map((project, index) => (
+            <ProjectCard project={project} featured={index === 0} />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <>
+            <h2>项目内容准备中</h2>
+            <p>补充项目资料后，这里会展示精选作品。</p>
+          </>
+        </div>
+      )
+    }
+  </section>
+</BaseLayout>

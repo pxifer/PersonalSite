@@ -1,0 +1,44 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { withBase } from '@/lib/paths';
+
+type Props = { post: CollectionEntry<'blog'> };
+const { post } = Astro.props as Props;
+const { data } = post;
+const dateLabel = data.publishedAt.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<article
+  class="post-card"
+  data-post-card
+  data-title={data.title}
+  data-summary={data.summary}
+  data-category={data.category}
+  data-tags={JSON.stringify(data.tags)}
+>
+  <div class="post-meta">
+    <a
+      class="category-link"
+      href={withBase(`/blog?category=${encodeURIComponent(data.category)}`)}
+      >{data.category}</a
+    >
+    <time datetime={data.publishedAt.toISOString().slice(0, 10)}>{dateLabel}</time>
+    {data.isExample && <span class="example-tag">示例文章</span>}
+  </div>
+  <h3><a href={withBase(`/blog/${data.slug}`)}>{data.title}</a></h3>
+  <p class="muted-copy">{data.summary}</p>
+  <ul class="tag-list tag-list-compact" aria-label="文章标签">
+    {
+      data.tags.map((tag) => (
+        <li>
+          <a href={withBase(`/blog?tag=${encodeURIComponent(tag)}`)}>{tag}</a>
+        </li>
+      ))
+    }
+  </ul>
+</article>

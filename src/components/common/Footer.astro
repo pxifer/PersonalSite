@@ -1,0 +1,26 @@
+---
+import { profile } from '@/data/profile';
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <p>© {year} {profile.name}</p>
+    <div class="footer-links">
+      {
+        profile.github && (
+          <a href={profile.github} target="_blank" rel="noreferrer">
+            GitHub
+          </a>
+        )
+      }
+      {
+        profile.email ? (
+          <a href={`mailto:${profile.email}`}>邮箱</a>
+        ) : (
+          <span>联系方式待补充</span>
+        )
+      }
+    </div>
+  </div>
+</footer>

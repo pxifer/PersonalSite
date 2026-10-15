@@ -1,0 +1,111 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { withBase } from '@/lib/paths';
+import { profile } from '@/data/profile';
+import { getPublishedPosts } from '@/lib/content';
+
+export async function getStaticPaths() {
+  const posts = getPublishedPosts(await getCollection('blog'));
+  return posts.map((post) => ({ params: { slug: post.data.slug }, props: { post } }));
+}
+
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const { data } = post;
+const toc = headings.filter((heading) => heading.depth === 2);
+const dateLabel = data.publishedAt.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+const updatedLabel = data.updatedAt?.toLocaleDateString('zh-CN', {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<BaseLayout
+  title={`${data.title} · ${profile.name}`}
+  description={data.summary}
+  currentPath="/blog"
+>
+  {
+    data.isExample && (
+      <div class="example-ribbon" role="note">
+        示例文章 · 请勿作为真实内容发布
+      </div>
+    )
+  }
+  <article class="container article-page">
+    <a class="back-link" href={withBase('/blog')}>← 返回博客</a>
+    <header class="article-header">
+      <a
+        class="category-link"
+        href={withBase(`/blog?category=${encodeURIComponent(data.category)}`)}
+        >{data.category}</a
+      >
+      <h1>{data.title}</h1>
+      <p class="article-summary">{data.summary}</p>
+      <div class="article-byline">
+        <span>{profile.name}</span><span>·</span>
+        <time datetime={data.publishedAt.toISOString().slice(0, 10)}>{dateLabel}</time>
+        {
+          updatedLabel && (
+            <>
+              <>
+                <span>·</span>
+                <span>更新于 {updatedLabel}</span>
+              </>
+            </>
+          )
+        }
+        {data.isExample && <span class="example-tag">示例文章</span>}
+      </div>
+      <ul class="tag-list">
+        {
+          data.tags.map((tag) => (
+            <li>
+              <a href={withBase(`/blog?tag=${encodeURIComponent(tag)}`)}>{tag}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </header>
+    <div class:list={['article-reading-layout', { 'has-toc': toc.length >= 2 }]}>
+      {
+        toc.length >= 2 && (
+          <details class="article-toc" open>
+            <summary>文章目录</summary>
+            <nav aria-label="文章目录">
+              <ol>
+                {toc.map((heading) => (
+                  <li>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+              </ol>
+            </nav>
+          </details>
+        )
+      }
+      <div class="prose article-prose"><Content /></div>
+    </div>
+    <footer class="article-footer">
+      <div class="author-card">
+        <span class="author-mark">{profile.wordmark}</span><div>
+          <strong>{profile.name}</strong><p>{profile.role} · {profile.intro}</p>
+        </div>
+      </div>
+      <div class="detail-pagination">
+        <a class="text-link" href={withBase('/blog')}>← 更多文章</a><a
+          class="text-link"
+          href={withBase('/about#contact')}>联系作者 ↗</a
+        >
+      </div>
+    </footer>
+  </article>
+</BaseLayout>

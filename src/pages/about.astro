@@ -1,0 +1,74 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import SectionHeading from '@/components/common/SectionHeading.astro';
+import ContactSection from '@/components/common/ContactSection.astro';
+import { experience, profile, skills } from '@/data/profile';
+---
+
+<BaseLayout title={`关于我 · ${profile.name}`} description={profile.intro}>
+  <div class="example-ribbon" role="note">演示站点 · 个人资料发布前请替换</div>
+  <section class="page-intro container about-intro">
+    <p class="eyebrow">ABOUT</p>
+    <h1>你好，我是{profile.name}。</h1>
+    <p>{profile.role}，关注把问题拆解清楚，再用可靠的工程实践把它做出来。</p>
+    <p class="section-disclaimer">
+      以上为页面结构示例，请替换成真实的个人介绍和做事方式。
+    </p>
+  </section>
+  <section class="section-space section-soft">
+    <div class="container">
+      <SectionHeading
+        eyebrow="CAPABILITIES"
+        title="我如何解决问题。"
+        description="按能力与实际用途组织，而不是用进度条表示熟练度。"
+      />
+      <div class="skills-grid">
+        {
+          skills.map((group, index) => (
+            <article class="skill-card">
+              <>
+                <span class="skill-index">0{index + 1}</span>
+                <h3>{group.title}</h3>
+                <p class="muted-copy">{group.description}</p>
+                <ul class="tag-list">
+                  {group.tools.map((tool) => (
+                    <li>{tool}</li>
+                  ))}
+                </ul>
+              </>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+  <section class="section-space container">
+    <SectionHeading
+      eyebrow="EXPERIENCE"
+      title="经历与积累。"
+      description="只保留能够说明专业方向的阶段和贡献。"
+    />
+    <ol class="experience-list">
+      {
+        experience.map((item, index) => (
+          <li class="experience-item">
+            <>
+              <span class="experience-index">0{index + 1}</span>
+              <p class="experience-period">{item.period}</p>
+              <div>
+                <>
+                  <h3>
+                    {item.role} <span>· {item.organization}</span>
+                  </h3>
+                  <p class="muted-copy">{item.contribution}</p>
+                </>
+              </div>
+            </>
+          </li>
+        ))
+      }
+    </ol>
+    <p class="section-disclaimer">经历为待替换示例，请核实后再公开。</p>
+  </section>
+  <ContactSection />
+</BaseLayout>
