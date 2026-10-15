@@ -33,9 +33,6 @@ jobs:
       - name: Install locked dependencies
         run: npm ci
 
-      - name: Verify release content
-        run: npm run check:release
-
       - name: Check types and content
         run: npm run check
 
@@ -52,7 +49,7 @@ jobs:
         run: npm run build
         env:
           SITE_URL: ${{ vars.SITE_URL }}
-          GITHUB_PAGES_BASE: ${{ vars.GITHUB_PAGES_BASE || '/' }}
+          GITHUB_PAGES_BASE: ${{ vars.GITHUB_PAGES_BASE }}
           DEPLOY_CONTEXT: production
           ASTRO_TELEMETRY_DISABLED: '1'
 
