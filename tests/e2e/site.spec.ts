@@ -18,7 +18,7 @@ test('project detail is statically rendered and returns to the list', async ({
   await expect(page.getByRole('heading', { name: '示例项目：产品工作台' })).toBeVisible();
   await expect(page.getByRole('link', { name: '← 返回项目列表' })).toHaveAttribute(
     'href',
-    '/projects',
+    sitePath('/projects'),
   );
 });
 
