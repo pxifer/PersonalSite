@@ -3,7 +3,15 @@ import tsParser from '@typescript-eslint/parser';
 import astro from 'eslint-plugin-astro';
 
 export default [
-  { ignores: ['dist/**', '.astro/**', 'node_modules/**', 'playwright-report/**'] },
+  {
+    ignores: [
+      'dist/**',
+      '.astro/**',
+      '.tmp/**',
+      'node_modules/**',
+      'playwright-report/**',
+    ],
+  },
   js.configs.recommended,
   ...astro.configs['flat/recommended'],
   {
@@ -32,6 +40,18 @@ export default [
         IntersectionObserver: 'readonly',
         Node: 'readonly',
         Response: 'readonly',
+        Element: 'readonly',
+        ParentNode: 'readonly',
+        DocumentFragment: 'readonly',
+        HTMLFormElement: 'readonly',
+        HTMLTextAreaElement: 'readonly',
+        HTMLTemplateElement: 'readonly',
+        FormData: 'readonly',
+        TextDecoder: 'readonly',
+        TextEncoder: 'readonly',
+        atob: 'readonly',
+        btoa: 'readonly',
+        fetch: 'readonly',
       },
     },
   },

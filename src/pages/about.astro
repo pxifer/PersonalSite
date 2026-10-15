@@ -6,14 +6,24 @@ import { experience, profile, skills } from '@/data/profile';
 ---
 
 <BaseLayout title={`关于我 · ${profile.name}`} description={profile.intro}>
-  <div class="example-ribbon" role="note">演示站点 · 个人资料发布前请替换</div>
+  {
+    profile.isExample && (
+      <div class="example-ribbon" role="note">
+        演示站点 · 个人资料发布前请替换
+      </div>
+    )
+  }
   <section class="page-intro container about-intro">
     <p class="eyebrow">ABOUT</p>
     <h1>你好，我是{profile.name}。</h1>
     <p>{profile.role}，关注把问题拆解清楚，再用可靠的工程实践把它做出来。</p>
-    <p class="section-disclaimer">
-      以上为页面结构示例，请替换成真实的个人介绍和做事方式。
-    </p>
+    {
+      profile.isExample && (
+        <p class="section-disclaimer">
+          以上为页面结构示例，请替换成真实的个人介绍和做事方式。
+        </p>
+      )
+    }
   </section>
   <section class="section-space section-soft">
     <div class="container">
@@ -68,7 +78,11 @@ import { experience, profile, skills } from '@/data/profile';
         ))
       }
     </ol>
-    <p class="section-disclaimer">经历为待替换示例，请核实后再公开。</p>
+    {
+      profile.isExample && (
+        <p class="section-disclaimer">经历为待替换示例，请核实后再公开。</p>
+      )
+    }
   </section>
   <ContactSection />
 </BaseLayout>

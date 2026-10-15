@@ -13,7 +13,11 @@ const base =
 export default defineConfig({
   site,
   base,
-  integrations: [sitemap()],
+  integrations: [
+    sitemap({
+      filter: (page) => !new URL(page).pathname.replace(/\/$/, '').endsWith('/admin'),
+    }),
+  ],
   trailingSlash: 'never',
   output: 'static',
 });

@@ -2,6 +2,7 @@ node_modules/
 dist/
 public/social-card.png
 .sites-artifacts/
+.tmp/
 .astro/
 playwright-report/
 test-results/

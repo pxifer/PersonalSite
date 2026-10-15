@@ -45,15 +45,17 @@ for (const file of files) {
 }
 
 if (releaseMode) {
-  const profile = await readFile(path.join(root, 'src/data/profile.ts'), 'utf8');
-  if (/isExample:\s*true/.test(profile))
-    failures.push('src/data/profile.ts: 个人资料仍标记为示例');
-  if (/your-name|example\.com|待替换|待补充|你的姓名/i.test(profile)) {
-    failures.push('src/data/profile.ts: 仍有需要替换的占位资料');
+  const profile = JSON.parse(
+    await readFile(path.join(root, 'src/data/profile.json'), 'utf8'),
+  );
+  if (profile.profile.isExample)
+    failures.push('src/data/profile.json: 个人资料仍标记为示例');
+  if (/your-name|example\.com|待替换|待补充|你的姓名/i.test(JSON.stringify(profile))) {
+    failures.push('src/data/profile.json: 仍有需要替换的占位资料');
   }
-  const email = profile.match(/email:\s*['"]([^'"]*)['"]/)?.[1] ?? '';
+  const email = profile.profile.email ?? '';
   if (!email || email.includes('example.com')) {
-    failures.push('src/data/profile.ts: 邮箱尚未替换为真实地址');
+    failures.push('src/data/profile.json: 邮箱尚未替换为真实地址');
   }
 }
 
