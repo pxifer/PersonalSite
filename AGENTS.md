@@ -15,16 +15,16 @@
 - Astro 静态生成，TypeScript 严格模式，普通多页面导航。
 - 自建 Astro 组件；原生 CSS、CSS 变量和组件局部样式。
 - CSS + IntersectionObserver 实现轻动效；按需加载小型浏览器脚本。
-- 个人资料使用类型明确的结构化数据；项目与博客使用 Markdown 和 Astro 内容集合。
+- 个人资料、技能与经历使用 `src/data/profile.json`，由 `profile.ts` 提供类型；项目与博客使用 Markdown 和 Astro 内容集合。
 - npm 管理依赖，提交 package-lock.json；CI 使用 npm ci。初始化时固定兼容的稳定依赖及 Node.js LTS 版本，本地与 CI 一致。
 - ESLint、Prettier、Vitest、Playwright 用于检查与验证。
-- 不自行引入 React/Vue、Tailwind、整套 UI 库、动画库、MDX、客户端路由、全局状态管理、数据库、后端或 CMS。
+- 不自行引入 React/Vue、Tailwind、整套 UI 库、动画库、MDX、客户端路由、全局状态管理、数据库、独立后端或完整 CMS。已确认的 `/admin` 静态管理页只调用 GitHub Contents API 修改个人资料。
 - 不提前实现评论、登录、点赞、联系表单、RSS、统计、全文搜索、分页、双语、浅色主题或 PDF 简历。新增功能或架构级依赖先说明必要性，按用户决定更新设计文档。
 
 ## 3. 代码组织与实现方式
 
 - 遵循 ARCHITECTURE.md 的目录设计：pages 组装路由；layouts 管理布局；components 按 common/home/projects/blog 划分；lib 放纯逻辑；scripts 放浏览器交互。
-- data 统一维护个人资料、技能和经历；content 管理项目与文章；不要把同一份业务资料复制到多个组件中。
+- data 统一维护个人资料、技能和经历；管理页与展示页共用 `profile.json`。content 管理项目与文章；不要把同一份业务资料复制到多个组件中。
 - 使用明确的 Props 和数据类型。不要用无理由的 any、忽略类型检查、禁用规则或吞掉异常来掩盖问题。
 - 仅在真实复用或职责明确时抽取组件，不为小型网站增加多包工程、通用插件系统或过度抽象。
 - 错误提示应能定位文件或字段；交互失败提供可理解的反馈与可行降级。
@@ -93,9 +93,9 @@
 - 禁止 Cloudflare 独立自动部署绕过 CI。检查失败时不发布，保留当前线上版本。
 - 同仓库分支通过检查后提供预览；main 发布正式版本。外部 fork PR 只运行不带秘密的检查，不自动部署。
 - 部署按环境串行化，跳过过期提交，防止旧版本覆盖新版本。回退使用已验证历史提交及受控工作流。
-- Token 仅在 CI Secrets 中使用，不进入源码、浏览器变量、日志或 public；不输出完整环境变量集合。
+- CI Token 仅在 Secrets 中使用，不进入源码、日志或 public；管理者用于 `/admin` 的仓库令牌只在当前浏览器页面中临时输入并直送 GitHub API，不持久化或输出。不要输出完整环境变量集合。
 - 预览禁止收录，但 noindex 和 robots 不是访问控制。正式 SITE_URL 统一生成 canonical、站点地图和分享地址。
-- GitHub Pages 是当前指定托管平台。发布使用 `.github/workflows/deploy-pages.yml`，在真实资料替换并通过 `check:release` 后部署；项目仓库路径必须遵循 Astro base 设置。
+- GitHub Pages 是当前指定托管平台。发布使用 `.github/workflows/deploy-pages.yml`；现阶段允许带显式示例标记的内容上线，`check:release` 不在部署门禁中。项目仓库路径必须遵循 Astro base 设置。
 - 先用平台域名验证，正式展示前绑定个人域名；真实测试大陆访问、HTTP 404、资源及 HTTPS。平台选型与自定义域名不等于访问质量保证。
 
 ## 9. 文档维护

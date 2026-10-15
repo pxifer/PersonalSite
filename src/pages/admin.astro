@@ -1,0 +1,384 @@
+---
+import BaseLayout from '@/layouts/BaseLayout.astro';
+import { withBase } from '@/lib/paths';
+---
+
+<BaseLayout
+  title="资料管理 · 个人网站"
+  description="编辑个人资料、技能和经历"
+  noindex={true}
+>
+  <section class="section-space container admin-page">
+    <p class="eyebrow">SITE ADMIN</p>
+    <h1>资料管理</h1>
+    <p class="muted-copy admin-intro">
+      修改会提交到 GitHub 仓库的 <code>main</code> 分支，由现有工作流更新网站。 此页面不保存你的访问令牌；关闭或刷新页面后需要重新输入。
+    </p>
+
+    <div class="admin-panel admin-access">
+      <h2>连接仓库</h2>
+      <p class="muted-copy">
+        输入仅授予 <code>pxifer/PersonalSite</code> 仓库“Contents: Read and write”权限的 GitHub
+        精细权限令牌。建议设置较短有效期，不要在共享设备上使用。
+      </p>
+      <p>
+        <a
+          class="text-link"
+          href="https://github.com/settings/personal-access-tokens/new"
+          target="_blank"
+          rel="noreferrer noopener">创建精细权限令牌 ↗</a
+        >
+      </p>
+      <div class="admin-access-row">
+        <label class="admin-field admin-token">
+          <span>GitHub 访问令牌</span>
+          <input
+            id="admin-token"
+            type="password"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="github_pat_…"
+          />
+        </label>
+        <button class="button button-primary" id="admin-load" type="button"
+          >加载当前资料</button
+        >
+        <button class="button button-quiet" id="admin-clear-token" type="button"
+          >清除令牌</button
+        >
+      </div>
+      <p class="admin-status" id="admin-status" role="status" aria-live="polite">
+        请先输入令牌并加载资料。
+      </p>
+    </div>
+
+    <form id="admin-form" class="admin-form" hidden>
+      <section class="admin-panel">
+        <div class="admin-section-head"><h2>基本资料</h2></div>
+        <div class="admin-grid">
+          <label class="admin-field"
+            ><span>展示姓名</span><input name="name" required maxlength="80" /></label
+          >
+          <label class="admin-field"
+            ><span>字标</span><input name="wordmark" required maxlength="20" /></label
+          >
+          <label class="admin-field"
+            ><span>专业方向</span><input name="role" required maxlength="120" /></label
+          >
+          <label class="admin-field"
+            ><span>联系状态</span><input
+              name="availability"
+              required
+              maxlength="100"
+            /></label
+          >
+          <label class="admin-field admin-wide"
+            ><span>首页主张</span><input
+              name="headline"
+              required
+              maxlength="160"
+            /></label
+          >
+          <label class="admin-field admin-wide"
+            ><span>个人简介</span><textarea
+              name="intro"
+              required
+              rows="5"
+              maxlength="1000"></textarea></label
+          >
+          <label class="admin-field"
+            ><span>邮箱</span><input name="email" type="email" maxlength="254" /></label
+          >
+          <label class="admin-field"
+            ><span>GitHub 主页</span><input
+              name="github"
+              type="url"
+              placeholder="https://github.com/…"
+            /></label
+          >
+        </div>
+        <label class="admin-checkbox"
+          ><input name="isExample" type="checkbox" /> 个人资料、技能和经历仍包含演示内容</label
+        >
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <h2>其他社交链接</h2><button
+            type="button"
+            class="button button-quiet"
+            data-add="social">添加链接</button
+          >
+        </div>
+        <div class="admin-rows" data-list="social"></div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <h2>技能分组</h2><button
+            type="button"
+            class="button button-quiet"
+            data-add="skill">添加分组</button
+          >
+        </div>
+        <div class="admin-rows" data-list="skill"></div>
+      </section>
+
+      <section class="admin-panel">
+        <div class="admin-section-head">
+          <h2>精选经历</h2><button
+            type="button"
+            class="button button-quiet"
+            data-add="experience">添加经历</button
+          >
+        </div>
+        <div class="admin-rows" data-list="experience"></div>
+      </section>
+
+      <div class="admin-savebar">
+        <p class="muted-copy">保存会创建一次 Git 提交，完成部署后访客才能看到更新。</p>
+        <button class="button button-primary" id="admin-save" type="submit"
+          >保存并发布</button
+        >
+      </div>
+      <p class="admin-status" id="admin-save-status" role="status" aria-live="polite"></p>
+      <p class="admin-links">
+        <a class="text-link" href={withBase('/')} target="_blank" rel="noreferrer"
+          >打开网站 ↗</a
+        >
+        <a
+          class="text-link"
+          href="https://github.com/pxifer/PersonalSite/actions"
+          target="_blank"
+          rel="noreferrer noopener">查看发布进度 ↗</a
+        >
+      </p>
+    </form>
+  </section>
+
+  <template id="admin-social-template">
+    <div class="admin-row" data-row="social">
+      <label class="admin-field"
+        ><span>平台名称</span><input data-field="label" required maxlength="60" /></label
+      >
+      <label class="admin-field"
+        ><span>链接</span><input
+          data-field="href"
+          type="url"
+          required
+          placeholder="https://…"
+        /></label
+      >
+      <button type="button" class="admin-remove" data-remove aria-label="删除这条社交链接"
+        >删除</button
+      >
+    </div>
+  </template>
+  <template id="admin-skill-template">
+    <div class="admin-row" data-row="skill">
+      <label class="admin-field"
+        ><span>分组名称</span><input data-field="title" required maxlength="80" /></label
+      >
+      <label class="admin-field admin-wide"
+        ><span>解决的问题</span><textarea
+          data-field="description"
+          required
+          rows="2"
+          maxlength="300"></textarea></label
+      >
+      <label class="admin-field"
+        ><span>技术与工具（用逗号分隔）</span><input data-field="tools" required /></label
+      >
+      <label class="admin-field"
+        ><span>关联项目 slug（可选，用逗号分隔）</span><input
+          data-field="projectSlugs"
+        /></label
+      >
+      <button type="button" class="admin-remove" data-remove aria-label="删除这个技能分组"
+        >删除分组</button
+      >
+    </div>
+  </template>
+  <template id="admin-experience-template">
+    <div class="admin-row" data-row="experience">
+      <label class="admin-field"
+        ><span>时间范围</span><input data-field="period" required maxlength="80" /></label
+      >
+      <label class="admin-field"
+        ><span>机构或阶段</span><input
+          data-field="organization"
+          required
+          maxlength="120"
+        /></label
+      >
+      <label class="admin-field"
+        ><span>角色</span><input data-field="role" required maxlength="120" /></label
+      >
+      <label class="admin-field admin-wide"
+        ><span>贡献</span><textarea
+          data-field="contribution"
+          required
+          rows="2"
+          maxlength="500"></textarea></label
+      >
+      <button type="button" class="admin-remove" data-remove aria-label="删除这条经历"
+        >删除经历</button
+      >
+    </div>
+  </template>
+  <script>
+    import '@/scripts/admin.ts';
+  </script>
+</BaseLayout>
+
+<style>
+  .admin-page {
+    max-width: 960px;
+  }
+  .admin-page h1 {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    margin: 0.4rem 0 1rem;
+  }
+  .admin-intro {
+    max-width: 720px;
+    margin-bottom: 2rem;
+  }
+  .admin-form {
+    display: grid;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+  }
+  .admin-form[hidden] {
+    display: none;
+  }
+  .admin-panel {
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--color-border, #34405c);
+    border-radius: 1.25rem;
+    background: #121a2e;
+  }
+  .admin-panel h2 {
+    margin: 0 0 1rem;
+    font-size: 1.45rem;
+  }
+  .admin-panel code {
+    overflow-wrap: anywhere;
+  }
+  .admin-access-row,
+  .admin-section-head,
+  .admin-savebar {
+    display: flex;
+    align-items: end;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .admin-section-head {
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+  }
+  .admin-section-head h2 {
+    margin: 0;
+  }
+  .admin-token {
+    flex: 1 1 280px;
+  }
+  .admin-grid,
+  .admin-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .admin-rows {
+    display: grid;
+    gap: 1rem;
+  }
+  .admin-row {
+    padding: 1.25rem;
+    border: 1px solid #34405c;
+    border-radius: 1rem;
+  }
+  .admin-wide {
+    grid-column: 1 / -1;
+  }
+  .admin-field {
+    display: grid;
+    gap: 0.45rem;
+    min-width: 0;
+    font-weight: 600;
+  }
+  .admin-field span {
+    font-size: 0.88rem;
+  }
+  .admin-field input,
+  .admin-field textarea {
+    width: 100%;
+    min-width: 0;
+    padding: 0.8rem 0.9rem;
+    border: 1px solid #65728f;
+    border-radius: 0.65rem;
+    color: #f1f5ff;
+    background: #0b1020;
+    font: inherit;
+  }
+  .admin-field input:focus-visible,
+  .admin-field textarea:focus-visible {
+    outline: 2px solid #a78bfa;
+    outline-offset: 2px;
+  }
+  .admin-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 1.2rem;
+  }
+  .admin-checkbox input {
+    width: 1.2rem;
+    height: 1.2rem;
+  }
+  .admin-remove {
+    min-height: 44px;
+    padding: 0.55rem 0.9rem;
+    border: 1px solid #65728f;
+    border-radius: 0.6rem;
+    color: #f1f5ff;
+    background: transparent;
+    cursor: pointer;
+    justify-self: start;
+  }
+  .admin-remove:hover,
+  .admin-remove:focus-visible {
+    border-color: #a78bfa;
+  }
+  .admin-status {
+    min-height: 1.6rem;
+    margin: 1rem 0 0;
+    color: #b6c2da;
+  }
+  .admin-status[data-error] {
+    color: #ffc4cf;
+  }
+  .admin-savebar {
+    justify-content: space-between;
+  }
+  .admin-savebar p {
+    max-width: 540px;
+  }
+  .admin-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+  }
+  @media (max-width: 767px) {
+    .admin-grid,
+    .admin-row {
+      grid-template-columns: 1fr;
+    }
+    .admin-wide {
+      grid-column: auto;
+    }
+    .admin-access-row > .button {
+      flex: 1 1 auto;
+    }
+  }
+</style>

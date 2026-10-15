@@ -18,7 +18,11 @@ const pageTitle = `${profile.name} · ${profile.role}`;
 
 <BaseLayout title={pageTitle} description={profile.intro}>
   <div class="example-ribbon" role="note">
-    演示站点 · 资料与文章均为示例，请替换后再正式发布
+    {
+      profile.isExample
+        ? '演示站点 · 资料与文章均为示例，请替换后再正式发布'
+        : '演示站点 · 项目与文章仍含示例内容'
+    }
   </div>
   <section class="hero container" aria-labelledby="hero-title">
     <div class="hero-glow" aria-hidden="true"></div>
@@ -37,7 +41,11 @@ const pageTitle = `${profile.name} · ${profile.role}`;
           >关于我 <span aria-hidden="true">↗</span></a
         >
       </div>
-      <p class="example-note">以上为示例表达，发布前请替换为真实个人资料。</p>
+      {
+        profile.isExample && (
+          <p class="example-note">以上为示例表达，发布前请替换为真实个人资料。</p>
+        )
+      }
     </div>
     <div class="hero-aside" aria-hidden="true">
       <div class="hero-monogram">{profile.wordmark}</div>
@@ -93,7 +101,13 @@ const pageTitle = `${profile.name} · ${profile.role}`;
           ))
         }
       </div>
-      <p class="section-disclaimer">技能分组为示例，请仅保留实际使用过的技术和工具。</p>
+      {
+        profile.isExample && (
+          <p class="section-disclaimer">
+            技能分组为示例，请仅保留实际使用过的技术和工具。
+          </p>
+        )
+      }
     </div>
   </section>
 
@@ -126,7 +140,11 @@ const pageTitle = `${profile.name} · ${profile.role}`;
         ))
       }
     </ol>
-    <p class="section-disclaimer">经历为内容结构示例，公开前请核实并替换。</p>
+    {
+      profile.isExample && (
+        <p class="section-disclaimer">经历为内容结构示例，公开前请核实并替换。</p>
+      )
+    }
   </section>
 
   <section class="section-space section-soft">
